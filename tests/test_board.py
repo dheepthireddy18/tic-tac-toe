@@ -45,7 +45,6 @@ def test_remove_mark():
     assert board.get(2, 2) is EMPTY
     assert len(board.empty_cells()) == 9
 
-
 # empty_cells skips marked cells and lists the rest row by row.
 def test_empty_cells_order():
     board = Board()
@@ -61,3 +60,50 @@ def test_board_full():
     for row, col in board.empty_cells():
         board.place_mark(row, col, "X")
     assert board.is_full() is True
+
+# every winning line counts: 3 across, 3 down and both diagonals
+@pytest.mark.parametrize("line", [
+    [(0, 0), (0, 1), (0, 2)],
+    [(1, 0), (1, 1), (1, 2)],
+    [(2, 0), (2, 1), (2, 2)],
+    [(0, 0), (1, 0), (2, 0)],
+    [(0, 1), (1, 1), (2, 1)],
+    [(0, 2), (1, 2), (2, 2)],
+    [(0, 0), (1, 1), (2, 2)],
+    [(0, 2), (1, 1), (2, 0)],
+], ids=["row0", "row1", "row2", "col0", "col1", "col2", "diag", "anti_diag"])
+def test_has_won_on_every_line(line):
+    board = Board()
+    for row, col in line:
+        board.place_mark(row, col, "X")
+    assert board.has_won("X") is True
+    assert board.has_won("O") is False
+
+# nobody has won on a new board
+def test_new_board_no_winner():
+    board = Board()
+    assert board.has_won("X") is False
+    assert board.has_won("O") is False
+
+# a line with mixed marks is not a win
+def test_mixed_line_not_a_win():
+    board = Board()
+    board.place_mark(0, 0, "X")
+    board.place_mark(0, 1, "O")
+    board.place_mark(0, 2, "X")
+    assert board.has_won("X") is False
+
+# a full board with no winner is a draw
+def test_full_board_no_winner_is_draw():
+    board = Board()
+    # X O X
+    # X O O
+    # O X X
+    marks = ["X", "O", "X",
+             "X", "O", "O",
+             "O", "X", "X"]
+    for i, mark in enumerate(marks):
+        board.place_mark(i // 3, i % 3, mark)
+    assert board.is_full() is True
+    assert board.has_won("X") is False
+    assert board.has_won("O") is False

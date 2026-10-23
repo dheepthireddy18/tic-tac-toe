@@ -1,6 +1,18 @@
 # default empty space in the cells before anybody plays.
 EMPTY = None
 
+# all 8 ways to win, as lists of cells: 3 rows, 3 columns, 2 diagonals
+WIN_LINES = [
+    [(0, 0), (0, 1), (0, 2)],
+    [(1, 0), (1, 1), (1, 2)],
+    [(2, 0), (2, 1), (2, 2)],
+    [(0, 0), (1, 0), (2, 0)],
+    [(0, 1), (1, 1), (2, 1)],
+    [(0, 2), (1, 2), (2, 2)],
+    [(0, 0), (1, 1), (2, 2)],
+    [(0, 2), (1, 1), (2, 0)],
+]
+
 '''
 A 3x3 tic-tac-toe grid, for marking the choices according to users choices.
 '''
@@ -45,3 +57,10 @@ class Board:
     # return True if no cells are left empty
     def is_full(self):
         return len(self.empty_cells()) == 0
+
+    # return True if the mark filled any one of the 8 winning lines
+    def has_won(self, mark):
+        for line in WIN_LINES:
+            if all(self._grid[row][col] == mark for row, col in line):
+                return True
+        return False
