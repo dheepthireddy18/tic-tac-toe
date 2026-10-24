@@ -1,7 +1,9 @@
 import pytest
+import random
 
 from board import EMPTY
 from game import Game
+from ai import EasyAI
 
 # to start testing with a new board so no other tests get affected with each other
 @pytest.fixture
@@ -68,3 +70,19 @@ def test_full_board_with_no_winner_is_a_draw(game):
     assert game.is_draw() is True
     assert game.is_over() is True
     assert game.get_winner() is None
+
+# in two-player mode the computer never takes a turn
+def test_two_player_game_has_no_computer_turn(game):
+    assert game.is_computer_turn() is False
+    game.play(0, 0)
+    assert game.is_computer_turn() is False
+
+
+# against the computer, O's move comes from the AI and the turn goes back to X
+def test_computer_plays_o_after_x():
+    game = Game(EasyAI(random.Random(1)))
+    game.play(1, 1)
+    assert game.is_computer_turn() is True
+    row, col = game.play_computer_turn()
+    assert game.get_board().cell(row, col) == "O"
+    assert game.current_player() == "X"
