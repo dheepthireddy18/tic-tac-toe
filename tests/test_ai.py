@@ -1,4 +1,4 @@
-#Tests for the AI players: the abstract base class and EasyAI.
+#Tests for the AI players: the abstract base class, EasyAI and HardAI.
 import random
 import pytest
 

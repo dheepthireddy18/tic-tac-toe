@@ -6,10 +6,11 @@ O = "O"
 
 class Game:
 
-    def __init__(self):
+    def __init__(self, ai=None):
         self._board = Board()
         self._current = X
         self._winner = None
+        self._ai = ai
 
     # returning the board 
     def get_board(self):
@@ -31,7 +32,6 @@ class Game:
     def is_over(self):
         return self._winner is not None or self._board.is_full()
 
-    # 
     def play(self, row, col):
         """
         Placing the current mark at row, col. Return True if the move was made.
@@ -46,3 +46,13 @@ class Game:
         else:
             self._current = O if self._current == X else X
         return True
+
+    # return True if it is the computer's turn to move
+    def is_computer_turn(self):
+        return self._ai is not None and self._current == O and not self.is_over()
+
+    # ask the AI for a move and play it; works the same for any AI level
+    def play_computer_turn(self):
+        row, col = self._ai.choose_move(self._board, self._current)
+        self.play(row, col)
+        return row, col
