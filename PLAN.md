@@ -33,3 +33,11 @@ To create a Tic-Tac-Toe game on a 3x3 board, which runs in terminal. Two people 
 - **Options:** Fixed list of all 8 winning lines (3 rows, 3 columns, 2 diagonals) as cell coordinates and check each one; loop over rows, columns and the two diagonals with separate code for each direction; or check only the lines through the last move placed.
 - **Chosen:** a fixed list of the 8 winning lines, checked in single loop inside.
 - **Why:** On a 3x3 board there are only 8 ways to win, so listing them makes the rules visible at a glance and leaves less room for off-by-one mistakes in diagonal loops.
+
+## What changed
+
+- **Board reads and prints through methods.** The plan only covered placing marks and checking the grid. I added `cell(row, col)` so other code can read a cell, and `__str__` so `main.py` can print the board, without either one touching `_grid`.
+- **Empty cells are `" "` instead of `None`.** I started with `None`, but a space lets each row be joined straight into text for printing.
+- **Game also handles the game mode.** Initially the plan was to give game.py only turns and results. It now also holds the chosen AI and asks it for O's moves, so `main.py` only reads input and prints, and the same play loop works for two players and for the computer.
+- **The random generator lives in `AIPlayer`.** Both Easy and Hard need one, so the base class sets it up once instead of repeating it in each subclass.
+- **Separate messages for invalid moves.** The plan had one rejection message. After playing the game I split it into "row and column must be between 1 and 3" and "that cell is already taken", so the player knows what to fix.
