@@ -22,22 +22,6 @@ def show_result(game):
         print(f" ******************************* Player {game.get_winner()} wins! ******************************")
         print("-" * 80)
 
-# run one game where 2 people take turns
-''' 
-def play_two_player():
-    """Run one game where two people take turns at the keyboard."""
-    game = Game()
-    print(game.get_board())
-    while not game.is_over():
-        row, col = ask_for_move(game.current_player())
-        if not game.play(row, col):
-            print("That cell is taken or off the board. Try again.")
-            continue
-        print()
-        print(game.get_board())
-    show_result(game)
-'''
-
 # keep asking until the player types one of the allowed choices
 def ask_for_choice(prompt, choices):
     while True:
@@ -48,10 +32,10 @@ def ask_for_choice(prompt, choices):
 
 # ask for the mode and level, and build the matching Game
 def choose_game():
-    mode = ask_for_choice("1) Two players   2) Versus computer: ", ["1", "2"])
+    mode = ask_for_choice("\nPick your opponent: \n1) Two players \n2) Versus computer\n\nEnter your choice: ", ["1", "2"])
     if mode == "1":
         return Game()
-    level = ask_for_choice("1) Easy   2) Hard: ", ["1", "2"])
+    level = ask_for_choice("\nPick a difficulty level of your choice: \n1) Easy   2) Hard\n\nEnter your choice: ", ["1", "2"])
     ai = EasyAI() if level == "1" else HardAI()
     return Game(ai)
 
@@ -65,16 +49,19 @@ def play(game):
         else:
             row, col = ask_for_move(game.current_player())
             if not game.play(row, col):
-                print("That cell is taken or off the board. Try again.")
+                if not game.get_board().is_on_board(row, col):
+                    print("\n--- Row and column must be between 1 and 3. Try again. ---\n")
+                else:
+                    print("\n--- That cell is already taken. Pick a different cell. ---\n")
                 continue
             print()
         print(game.get_board())
     show_result(game)
 
 def main():
-    print("=" * 80)
-    print(" **************************  Welcome to Tic-Tac-Toe!  ************************** ")
-    print("=" * 80)
+    print("-" * 80)
+    print(" <<<<<<<<<<<<<<<<<<<<<<<<<<  Welcome to Tic-Tac-Toe!  >>>>>>>>>>>>>>>>>>>>>>>>>> ")
+    print("-" * 80)
     play(choose_game())
 
 
