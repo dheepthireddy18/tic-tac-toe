@@ -1,10 +1,10 @@
 #Tests for the AI players: the abstract base class and EasyAI.
 import random
-
 import pytest
 
-from ai import AIPlayer, EasyAI
+from ai import AIPlayer, EasyAI, HardAI
 from board import Board
+from game import Game
 
 # empty board for each test
 @pytest.fixture
@@ -49,4 +49,34 @@ def test_easy_ai_choose_move_leaves_board_unchanged(board):
     board.place_mark(1, 1, "X")
     before = str(board)
     EasyAI(random.Random(3)).choose_move(board, "O")
+    assert str(board) == before
+
+# Hard completes its own line when it can win this turn
+def test_hard_ai_takes_a_winning_move(board):
+    # O O .
+    # X X .
+    # . . X
+    for row, col in [(1, 0), (1, 1), (2, 2)]:
+        board.place_mark(row, col, "X")
+    for row, col in [(0, 0), (0, 1)]:
+        board.place_mark(row, col, "O")
+    assert HardAI(random.Random(1)).choose_move(board, "O") == (0, 2)
+
+# playing second against a random opponent, Hard never loses (20 seeded games)
+def test_hard_ai_never_loses_playing_second():
+    for seed in range(20):
+        game = Game()
+        easy = EasyAI(random.Random(seed))
+        hard = HardAI(random.Random(seed))
+        while not game.is_over():
+            ai = easy if game.current_player() == "X" else hard
+            row, col = ai.choose_move(game.get_board(), game.current_player())
+            game.play(row, col)
+        assert game.get_winner() != "X"
+
+# Hard tries moves while searching, but must put the board back exactly as it was
+def test_hard_ai_choose_move_leaves_board_unchanged(board):
+    board.place_mark(0, 0, "X")
+    before = str(board)
+    HardAI(random.Random(3)).choose_move(board, "O")
     assert str(board) == before
