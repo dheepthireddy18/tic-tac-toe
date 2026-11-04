@@ -80,3 +80,21 @@ def test_hard_ai_choose_move_leaves_board_unchanged(board):
     before = str(board)
     HardAI(random.Random(3)).choose_move(board, "O")
     assert str(board) == before
+
+# Medium wins if it can, otherwise blocks X, otherwise picks at random.
+# Each layout is 9 cells read row by row; a space is an empty cell.
+@pytest.mark.parametrize("layout, expected", [
+    ("OO XX   X", (0, 2)),   # win and block both possible: winning comes first
+    ("XX O     ", (0, 2)),   # no win for O, so block X's row
+    ("O X X    ", (2, 0)),   # block X on the anti-diagonal
+    ("OXXXO    ", (2, 2)),   # win on the main diagonal
+    ("XOXXOOOX ", (2, 2)),   # only one empty cell left
+], ids=["win_over_block", "block_row", "block_anti_diag", "win_diag", "last_cell"])
+def test_medium_ai_wins_then_blocks(board, layout, expected):
+    from ai import MediumAI  # move to the top imports once MediumAI exists
+    for i, mark in enumerate(layout):
+        if mark != " ":
+            board.place_mark(i // 3, i % 3, mark)
+    # the right move must not depend on the random seed
+    for seed in range(20):
+        assert MediumAI(random.Random(seed)).choose_move(board, "O") == expected
