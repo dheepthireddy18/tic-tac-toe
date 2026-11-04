@@ -13,6 +13,7 @@ To create a Tic-Tac-Toe game on a 3x3 board, which runs in terminal. Two people 
 |REQ-6|The game should detect a win when a player places three matching marks in a row, column, or diagonal.|Test all eight possible winning lines and verify that the correct winner is announced.|
 |REQ-7|The game should stop further moves after a win or draw.|Finish a game and attempt another move; verify that the board remains unchanged.|
 |REQ-8|The game shall display the updated board after every valid move.|Make several moves and verify that the board is displayed after each move, showing the updated marks in the correct cells|
+|REQ-9|The game should offer a Medium difficulty level between Easy and Hard. On its turn, Medium AI takes a winning move if it has one, otherwise it blocks the opponent's winning move, otherwise it picks a random empty cell.|Pick Medium from the difficulty menu and verify the computer plays O. Set up a board where O can win in one move and verify Medium takes it; set up a board where X can win in one move and verify Medium blocks it; on a board with neither, verify Medium picks only empty cells across many seeds.|
 
 ## Components
 - **board.py**: Creates a 3×3 grid `_grid` and it places and answers questions about the grid.
