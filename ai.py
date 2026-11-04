@@ -17,6 +17,20 @@ class EasyAI(AIPlayer):
     def choose_move(self, board, mark):
         return self._rng.choice(board.empty_cells())
 
+# win if it can, otherwise block the opponent's win, otherwise pick at random
+class MediumAI(AIPlayer):
+    def choose_move(self, board, mark):
+        opponent = "O" if mark == "X" else "X"
+        # check own wins first, so winning beats blocking
+        for player in (mark, opponent):
+            for row, col in board.empty_cells():
+                board.place_mark(row, col, player)    # try the move
+                won = board.has_won(player)
+                board.remove_mark(row, col)           # undo it
+                if won:
+                    return row, col
+        return self._rng.choice(board.empty_cells())
+
 # using minimax to find the best move, so it never loses on 3x3
 class HardAI(AIPlayer):
     def choose_move(self, board, mark):
