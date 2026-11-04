@@ -1,5 +1,5 @@
 from game import Game
-from ai import EasyAI, HardAI
+from ai import EasyAI, MediumAI, HardAI
 
 # asking the user to enter 2 whole numbers 
 def ask_for_move(mark):
@@ -35,9 +35,9 @@ def choose_game():
     mode = ask_for_choice("\nPick your opponent: \n1) Two players \n2) Versus computer\n\nEnter your choice: ", ["1", "2"])
     if mode == "1":
         return Game()
-    level = ask_for_choice("\nPick a difficulty level of your choice: \n1) Easy   2) Hard\n\nEnter your choice: ", ["1", "2"])
-    ai = EasyAI() if level == "1" else HardAI()
-    return Game(ai)
+    levels = {"1": EasyAI, "2": MediumAI, "3": HardAI}
+    level = ask_for_choice("\nPick a difficulty level of your choice: \n1) Easy   2) Medium   3) Hard\n\nEnter your choice: ", list(levels))
+    return Game(levels[level]())
 
 # run one game until someone wins or it is a draw
 def play(game):
